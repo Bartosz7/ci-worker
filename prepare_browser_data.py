@@ -47,10 +47,9 @@ def change_directory(new_dir):
     and change back the working directory. If new_dir does not
     exist, it is created"""
     prev_dir = os.getcwd()
-    new_abs_dir = os.path.abspath(new_dir)
-    if not os.path.exists(new_abs_dir):
-        os.mkdir(new_abs_dir)
-    os.chdir(new_abs_dir)
+    if not os.path.exists(new_dir):
+        os.mkdir(new_dir)
+    os.chdir(new_dir)
     try:
         yield
     finally:
@@ -118,6 +117,13 @@ def process_concepts(graph, concepts, concept_dict):
             process_single_concept(graph, concept_uri, concept_dict)
 
 
+def save_concept_dict(concept_dict):
+    if not os.path.exists("core"):
+        os.makedirs("core")
+    with open(os.path.join("core", "index_dict.json"), "w") as file:
+        json.dump(concept_dict, file, indent=4)
+
+
 def main():
     concept_dict = {}  # dictionary to store (conceptId, prefLabel) for browser
     args = parse_arguments()
@@ -133,14 +139,8 @@ def main():
         process_concepts(openCS, concept_triples, concept_dict)
         print("Finished processing concept files")
         # save dictionary with (prefLabel, conceptId)
-        print(os.getcwd())
-        os.makedirs(os.path.join(os.getcwd(), "core"), exist_ok=True)
-        filepath = os.path.join(os.getcwd(), "core", "index_dict.json")
-        print(filepath)
-        with open(filepath, "w") as file:
-            json.dump(concept_dict, file, indent=4)
+        save_concept_dict(concept_dict)
         print("Index dictionary saved")
-        print(os.listdir("core"))
 
 
 if __name__ == "__main__":
