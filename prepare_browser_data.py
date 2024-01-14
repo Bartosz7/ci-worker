@@ -119,7 +119,7 @@ def process_concepts(graph, concepts, concept_dict):
 
 def save_concept_dict(concept_dict):
     if not os.path.exists("core"):
-        os.makedirs("core")
+        os.makedirs("core", exist_ok=True)
     with open(os.path.join("core", "index_dict.json"), "w") as file:
         json.dump(concept_dict, file, indent=4)
 
