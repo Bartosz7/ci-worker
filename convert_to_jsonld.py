@@ -2,6 +2,7 @@
 # for the OpenCS web browser:
 # - adds a skos:narrower property to each concept for navigation
 # - converts and saves each concept in a JSONLD file
+# - creates a (prefLabel, conceptId) dict and saves it in core/index_dict.json
 # usage: prepare_browser_files.py [-h] input_file [destination]
 
 import os
@@ -116,6 +117,13 @@ def process_concepts(graph, concepts, concept_dict):
             process_single_concept(graph, concept_uri, concept_dict)
 
 
+def save_concept_dict(concept_dict):
+    if not os.path.exists("core"):
+        os.makedirs("core")
+    with open(os.path.join("core", "index_dict.json"), "w") as file:
+        json.dump(concept_dict, file, indent=4)
+
+
 def main():
     concept_dict = {}  # dictionary to store (conceptId, prefLabel) for browser
     args = parse_arguments()
@@ -127,9 +135,8 @@ def main():
         concept_triples = select_triples_with_query(openCS,
                                                     SELECT_CONCEPTS_QUERY)
         process_concepts(openCS, concept_triples, concept_dict)
-    # save concept_dict
-    with open("index_dict.json", "w") as file:
-        json.dump(concept_dict, file)
+        # save dictionary with (prefLabel, conceptId)
+        save_concept_dict(concept_dict)
 
 
 if __name__ == "__main__":
