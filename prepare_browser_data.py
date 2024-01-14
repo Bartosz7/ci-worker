@@ -47,9 +47,10 @@ def change_directory(new_dir):
     and change back the working directory. If new_dir does not
     exist, it is created"""
     prev_dir = os.getcwd()
-    if not os.path.exists(new_dir):
-        os.mkdir(new_dir)
-    os.chdir(new_dir)
+    new_abs_dir = os.path.abspath(new_dir)
+    if not os.path.exists(new_abs_dir):
+        os.mkdir(new_abs_dir)
+    os.chdir(new_abs_dir)
     try:
         yield
     finally:
@@ -139,6 +140,7 @@ def main():
         with open(filepath, "w") as file:
             json.dump(concept_dict, file, indent=4)
         print("Index dictionary saved")
+        print(os.listdir("core"))
 
 
 if __name__ == "__main__":
