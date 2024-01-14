@@ -116,14 +116,6 @@ def process_concepts(graph, concepts, concept_dict):
         with change_directory(get_dirname_from_concept(str(concept_uri))):
             process_single_concept(graph, concept_uri, concept_dict)
 
-
-def save_concept_dict(concept_dict):
-    if not os.path.exists("core"):
-        os.makedirs("core", exist_ok=True)
-    with open(os.path.join("core", "index_dict.json"), "w") as file:
-        json.dump(concept_dict, file, indent=4)
-
-
 def main():
     concept_dict = {}  # dictionary to store (conceptId, prefLabel) for browser
     args = parse_arguments()
@@ -138,9 +130,14 @@ def main():
                                                     SELECT_CONCEPTS_QUERY)
         process_concepts(openCS, concept_triples, concept_dict)
         print("Finished processing concept files")
-        # save dictionary with (prefLabel, conceptId)
-        save_concept_dict(concept_dict)
-        print("Index dictionary saved")
+    # save dictionary with (prefLabel, conceptId)
+    print(os.getcwd())
+    print(os.listdir())
+    filepath = os.path.join(os.getcwd(), "core", "index_dict.json")
+    print(filepath)
+    with open(filepath, "w") as file:
+        json.dump(concept_dict, file, indent=4)
+    print("Index dictionary saved")
 
 
 if __name__ == "__main__":
