@@ -128,15 +128,19 @@ def main():
     concept_dict = {}  # dictionary to store (conceptId, prefLabel) for browser
     args = parse_arguments()
     openCS = load_graph(args.input)
+    print("Graph loaded")
     # preprocess graph
     openCS = add_skos_narrower_property(openCS)
+    print("New property added: skos:narrower")
     # serialise individual concepts as jsonld files
     with change_directory(args.destination):
         concept_triples = select_triples_with_query(openCS,
                                                     SELECT_CONCEPTS_QUERY)
         process_concepts(openCS, concept_triples, concept_dict)
+        print("Finished processing concept files")
         # save dictionary with (prefLabel, conceptId)
         save_concept_dict(concept_dict)
+        print("Index dictionary saved")
 
 
 if __name__ == "__main__":
